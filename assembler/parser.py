@@ -68,6 +68,7 @@ class parser:
                         print(f"Updated variable {symbol}")
                         self.VAR.append(symbol)
                         primaryADDR += 1
+        file.close()
 
 
 c = parser()

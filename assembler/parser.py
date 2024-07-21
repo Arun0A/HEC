@@ -62,12 +62,14 @@ class parser:
             linenumber += 1
             if strip_line.startswith("@"):
                 symbol = strip_line[1:]
-                if symbol not in self.LABLES:
-                    if symbol not in self.DEF:
-                        parser.addSymbol("symbols.json", symbol, primaryADDR)
-                        print(f"Updated variable {symbol}")
-                        self.VAR.append(symbol)
-                        primaryADDR += 1
+                if symbol.isnumeric() == 0:
+                    if symbol not in self.LABLES:
+                        if symbol not in self.DEF:
+                            parser.addSymbol("symbols.json", symbol, primaryADDR)
+                            print(f"Updated variable {symbol}")
+                            self.VAR.append(symbol)
+                            primaryADDR += 1
+                else: continue
         file.close()
 
 

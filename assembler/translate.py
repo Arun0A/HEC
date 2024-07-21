@@ -71,7 +71,7 @@ def translateA(line, Origin, Dest):
     if instruction.isnumeric():
         instruction = int(instruction)
         machine = decTObin(instruction)
-        writeToHack(Dest, machine)
+        return writeToHack(Dest, machine)
 
     try:
         with open(Origin, "r") as infile:

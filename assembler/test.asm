@@ -1,63 +1,69 @@
-// Multiplies R0 and R1 and stores the result in R2.
-// (R0, R1, R2 refer to RAM[0], RAM[1], and RAM[2], respectively.)
-// The algorithm is based on repetitive addition.
-
-// TO PERFORM R2 = R0*R1
+// Runs an infinite loop that listens to the keyboard input. 
+// When a key is pressed (any key), the program blackens the screen,
+// i.e. writes "black" in every pixel. When no key is pressed, 
+// the screen should be cleared.
 
 // Pseudo Code
-// ===========
-// n = R1
-// i = 1
-// mul = 0
-
+// kb = 24576
 // LOOP:
-// if i>n goto STOP
-// mul = mul + R0
-// i = i+1
-// goto LOOP
+//     sc = 16384
+//     Check M @24576
+//     if M>0: goto BLACK
+//     else: goto WHITE
+// BLACK:
+//     while 24575-sc > 0:
+//         @sc M = -1
+//         sc += 1
+//     goto LOOP
+// WHITE:
+//     while 24575-sc > 0:
+//         @sc M = 0
+//         sc += 1
+//     goto LOOP
 
-// STOP:
-// R2 = mul
 
-@R1
-D=M 
-@n
+@24576
+D=A 
+@kb 
 M=D
-
-@i
-M=1
-
-@mul
-M=0
-
-@R2
-M=0
 
 (LOOP)
-@i
-D=M
-@n
-D=D-M
-@STOP 
-D;JGT
-
-@R0
-D=M 
-@mul
-M=D+M 
-
-@i 
-M=M+1
-
-@LOOP
-0;JMP
-
-(STOP)
-@mul
-D=M 
-@R2
+@16384
+D=A 
+@sc 
 M=D
 
-(END)
-@END
-0;JMP
+@24576
+D=M 
+@BLACK
+D; JGT
+@WHITE
+D; JEQ
+
+(BLACK)
+@sc
+A=M 
+M=-1
+@24575
+D=A 
+@sc
+D=D-M 
+M=M+1
+@BLACK
+D; JGT
+@LOOP
+D; JEQ
+
+(WHITE)
+@sc
+A=M 
+M=0
+@24575
+D=A 
+@sc
+D=D-M 
+M=M+1
+@WHITE
+D; JGT
+@LOOP
+D; JEQ

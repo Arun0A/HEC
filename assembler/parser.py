@@ -73,6 +73,7 @@ class parser:
         file.close()
 
 
-c = parser()
-c.labels(filename = "test.asm")
-c.variables(filename = "test.asm")
+if __name__ == "__main__":
+    c = parser()
+    c.labels(filename = "test.asm")
+    c.variables(filename = "test.asm")

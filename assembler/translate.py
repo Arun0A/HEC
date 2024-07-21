@@ -147,25 +147,25 @@ def translateC(line, Dest):
     machine = "111" + a_bit + c_bits + d_bits + j_bits
     return writeToHack(Dest, machine)
         
+if __name__ == "__main__":     
+    chdir("assembler")
+    filename = "test.asm"
+    OUTPUT_FILE = "test.hack"
+    symbols = "symbols.json"
+    file = open(filename, "r")
+    linenumber = -1
+    for line in file:
+        strip_line = line.split('//')[0].strip()
+        if not strip_line:
+            continue
+        if strip_line.startswith("("):
+            continue
+        linenumber += 1
         
-chdir("assembler")
-filename = "test.asm"
-OUTPUT_FILE = "test.hack"
-symbols = "symbols.json"
-file = open(filename, "r")
-linenumber = -1
-for line in file:
-    strip_line = line.split('//')[0].strip()
-    if not strip_line:
-        continue
-    if strip_line.startswith("("):
-        continue
-    linenumber += 1
-    
-    # print(str(linenumber), strip_line)
+        # print(str(linenumber), strip_line)
 
-    if strip_line.startswith("@"):
-        translateA(strip_line, symbols, OUTPUT_FILE)
-    else:
-        translateC(strip_line, OUTPUT_FILE)
-print(f"Translated {linenumber}+1 lines in total.")
+        if strip_line.startswith("@"):
+            translateA(strip_line, symbols, OUTPUT_FILE)
+        else:
+            translateC(strip_line, OUTPUT_FILE)
+    print(f"Translated {linenumber}+1 lines in total.")

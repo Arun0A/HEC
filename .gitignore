@@ -2,3 +2,4 @@ projects/
 arch/
 assembler/tempCRFile.py
 assembler/__pycache__
+VMTranslator/__pycache__

@@ -1,6 +1,8 @@
 import sys
 import random
 
+function_calls = {}     # {"function_name": num_calls}
+
 def generateArithmetic(command):
     counterJmp=str(random.randint(0,10000)) # get a random integer which we use to create unique conditional jump location
     
@@ -70,8 +72,117 @@ def generateBranch(command, segment):
         retStr = f"label {segment}"
     elif command == "goto":
         retStr = f"@{segment}\n"+"0;JMP"
-    elif command == "label":
+    elif command == "if-goto":
         retStr = "@SP\n"+"AM=M-1\n"+"D=M\n"+f"@{segment}\n"+"D;JNE"
-
+    
     return retStr
 
+def pushSegment(segment):
+    instructions = [
+        f'@{segment}',
+        'D=M',
+        '@SP',
+        'M=M+1',
+        'A=M-1',
+        'M=D'
+    ]
+    return '\n'.join(instructions) 
+
+def generateFunction(command, function, localVar):
+    instructions = [f'({function})']    # Entry Label
+    instructions += ['@SP','D=M','@LCL','M=D']
+    for _ in range(int(localVar.strip())):
+        instructions += ['@0','D=A','@SP','M=M+1','A=M-1','M=D']
+    
+    retStr = "\n".join(instructions)
+    return retStr
+
+
+def generateCall(command, function, args):
+    global function_calls
+
+    try:
+        function_calls[function] += 1
+        call_num = function_calls[function]
+    except (KeyError):
+        function_calls[function] = 0
+        call_num = 0
+
+    return_address = f'{function}$ret.{call_num}'
+    instructions = [
+        f'@{return_address}',
+        'D=A',
+        '@SP',
+        'M=M+1',
+        'A=M-1',
+        'M=D',                      # push return address label to stack
+        pushSegment('LCL'),
+        pushSegment('ARG'),
+        pushSegment('THIS'),
+        pushSegment('THAT'),
+        f'@{5 + int(args)}',             # number to subtract from SP to get to ARG
+        'D=A',
+        '@SP',
+        'D=M-D',
+        '@ARG',
+        'M=D',                      # reposition ARG
+        '@SP',
+        'D=M',
+        '@LCL',
+        'M=D',                      # reposition LCL
+        f'@{function}',
+        '0;JMP',                    # call function (transfer control to callee)
+        f'({return_address})'       # inject return address label into the code
+    ]
+
+    retStr = "\n".join(instructions)
+    return retStr
+
+def generateReturn(command):
+    instructions = [
+        '@LCL',
+        'D=M',
+        '@R13',
+        'M=D',      # save LCL (end of frame) in temporary variable
+        '@5',
+        'A=D-A',
+        'D=M',
+        '@R14',
+        'M=D',      # save return address in temporary variable
+        '@SP',
+        'A=M-1',
+        'D=M',
+        '@ARG',
+        'A=M',
+        'M=D',      # reposition return value for the caller
+        'D=A+1',
+        '@SP',
+        'M=D',      # reposition stack pointer for the caller
+        '@R13',
+        'AM=M-1',
+        'D=M',
+        '@THAT',
+        'M=D',      # restore THAT (that segment) for the caller
+        '@R13',
+        'AM=M-1',
+        'D=M',
+        '@THIS',
+        'M=D',      # restore THIS (this segment) for the caller
+        '@R13',
+        'AM=M-1',
+        'D=M',
+        '@ARG',
+        'M=D',      # restore ARG (argument segment) for the caller
+        '@R13',
+        'AM=M-1',
+        'D=M',
+        '@LCL',
+        'M=D',      # restore LCL (local segment) for the caller
+        '@R14',
+        'A=M',
+        '0;JMP'     # go to the return address
+    ]
+
+    retStr = "\n".join(instructions)
+    return retStr
+   

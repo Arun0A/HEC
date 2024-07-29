@@ -1,32 +1,20 @@
-// This file is part of www.nand2tetris.org
-// and the book "The Elements of Computing Systems"
-// by Nisan and Schocken, MIT Press.
-// File name: projects/7/MemoryAccess/BasicTest/BasicTest.vm
-
-// Executes pop and push commands.
-
-push constant 10
-pop local 0
-push constant 21
-push constant 22
-pop argument 2
-pop argument 1
-push constant 36
-pop this 6
-push constant 42
-push constant 45
-pop that 5
-pop that 2
-push constant 510
-pop temp 6
-push local 0
-push that 5
-add
-push argument 1
-sub
-push this 6
-push this 6
-add
-sub
-push temp 6
-add
+function Main.fibonacci 0
+	push argument 0
+	push constant 2
+	lt                     
+	if-goto N_LT_2        
+	goto N_GE_2
+label N_LT_2               // if n < 2 returns n
+	push argument 0        
+	return
+label N_GE_2               // if n >= 2 returns fib(n - 2) + fib(n - 1)
+	push argument 0
+	push constant 2
+	sub
+	call Main.fibonacci 1  // computes fib(n - 2)
+	push argument 0
+	push constant 1
+	sub
+	call Main.fibonacci 1  // computes fib(n - 1)
+	add                    // returns fib(n - 1) + fib(n - 2)
+	return

@@ -64,3 +64,14 @@ def generateMemoryAccess(command, segment, index):
             retStr = '@SP\n'+'M=M-1\n'+'A=M\n'+'D=M\n'+'@'+str((sys.argv[1].split('.'))[0])+'.'+str(index)+'\n'+'M=D'
     # Return a representation of Hack Assembly instruction(s) which implement the passed in command
     return retStr
+
+def generateBranch(command, segment):
+    if command == "label":
+        retStr = f"label {segment}"
+    elif command == "goto":
+        retStr = f"@{segment}\n"+"0;JMP"
+    elif command == "label":
+        retStr = "@SP\n"+"AM=M-1\n"+"D=M\n"+f"@{segment}\n"+"D;JNE"
+
+    return retStr
+

@@ -17,6 +17,9 @@ def code(instType, instArgs):
     elif instType=="C_PUSH":
         assembly = generateMemoryAccess(instArgs[0], (instArgs[1])[0], (instArgs[1])[1])
     
+    elif instType=="C_BRANCH":
+        assembly = generateBranch(instArgs[0], instArgs[1])
+
     else:
         assembly = generateMemoryAccess(instArgs[0], (instArgs[1])[0], (instArgs[1])[1])
     return assembly

@@ -10,5 +10,8 @@ def parser(inst):
             tup = ('C_PUSH',(command,(items[1],items[2])))
         else: 
             tup = ('C_POP',(command,(items[1],items[2])))
-    
+
+    elif command.strip() in ['label', 'goto', 'if-goto']:
+        tup = ('C_BRANCH',(command,items[1])) # parseBranch(lineArr)
+
     return tup

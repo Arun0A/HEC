@@ -3,3 +3,4 @@ arch/
 assembler/tempCRFile.py
 assembler/__pycache__
 VMTranslator/__pycache__
+VMTranslator/VMTranslator Routine.png
